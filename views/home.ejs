@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/style.css">
+    <title>FrontEndTest</title>
+</head>
+
+<body>
+    <div class="side-bar">
+        <form class="form" action="/update" method="POST">
+            <label for="number">Quantity</label>
+            <input type="number" id="number" value="<%= number %>" placeholder="Type here" name="number">
+        </form>
+    </div>
+
+    <div class="container" id="numberContainer">
+        <% for (let i = 0; i < number; i++) { %>
+            <div class="card">
+                <p class="number" id="newNumber<%= i %>">
+                    <%= i + 1 %>
+                </p>
+            </div>
+        <% } %>
+    </div>
+
+    <script>
+        var numberContainer = document.getElementById('numberContainer');
+        var number = <%= number %>;
+
+        document.getElementById('number').addEventListener('input', function () {
+            var newNumber = parseInt(document.getElementById('number').value);
+            fetch('/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'number=' + encodeURIComponent(newNumber)
+            })
+                .then(response => response.text())
+                .then(data => {
+                    var numberContainer = document.getElementById('numberContainer');
+                    if (newNumber > number) {
+                        for (let i = number; i < newNumber; i++) {
+                            var div = document.createElement('div');
+                            div.className = 'card';
+                            div.innerHTML = '<p class="number" id="newNumber' + i + '">' + (i + 1) + '</p>';
+                            numberContainer.appendChild(div);
+                        }
+                    } else if (newNumber < number) {
+                        for (let i = number - 1; i >= newNumber; i--) {
+                            numberContainer.removeChild(document.getElementById('newNumber' + i).parentNode);
+                        }
+                    }
+                    number = newNumber;
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+
+</html>
