@@ -1,3 +1,4 @@
+const port = process.env.PORT || 3000;
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
@@ -20,6 +21,6 @@ app.post('/update', (req, res) => {
     res.send(number.toString());
 });
 
-app.listen(3000, function(){
+app.listen(port, function(){
     console.log("Executing on port 3000");
 })
